@@ -1,0 +1,40 @@
+import numpy as np
+
+# Parameter
+lambda_poisson = 5  # Rata-rata kedatangan pelanggan per hari (proses Poisson)
+probabilitas_beli_motor = 0.2  # Probabilitas setiap pelanggan membeli motor
+harga_motor = 20000000  # Harga motor dalam satuan IDR
+jumlah_hari_simulasi = 30  # Periode simulasi (30 hari)
+jumlah_simulasi = 1000  # Jumlah simulasi untuk estimasi yang lebih baik
+
+# Fungsi untuk mensimulasikan penjualan per hari
+def simulasi_penjualan():
+    total_motor_terjual = 0
+    for hari in range(jumlah_hari_simulasi):
+        # Simulasi kedatangan pelanggan per hari (distribusi Poisson)
+        kedatangan_pelanggan = np.random.poisson(lambda_poisson)
+        
+        # Simulasi pembelian motor oleh pelanggan yang datang
+        motor_terjual_hari_ini = np.sum(np.random.rand(kedatangan_pelanggan) < probabilitas_beli_motor)
+        
+        # Akumulasi jumlah motor terjual
+        total_motor_terjual += motor_terjual_hari_ini
+    
+    return total_motor_terjual
+
+# Menjalankan simulasi Monte Carlo untuk beberapa iterasi
+total_motor_terjual_simulasi = []
+pendapatan_simulasi = []
+
+for _ in range(jumlah_simulasi):
+    total_motor_terjual = simulasi_penjualan()
+    total_motor_terjual_simulasi.append(total_motor_terjual)
+    pendapatan_simulasi.append(total_motor_terjual * harga_motor)
+
+# Menampilkan hasil simulasi
+rata_rata_motor_terjual = np.mean(total_motor_terjual_simulasi)
+rata_rata_pendapatan = np.mean(pendapatan_simulasi)
+
+print(f"Rata-rata jumlah motor terjual dalam {jumlah_hari_simulasi} hari: {rata_rata_motor_terjual}")
+print(f"Rata-rata pendapatan yang dihasilkan: IDR {rata_rata_pendapatan:,.2f}")
+print(f"Simulasi berhasil dijalankan sebanyak {jumlah_simulasi} kali.")
